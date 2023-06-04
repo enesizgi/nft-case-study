@@ -1,7 +1,71 @@
 <script>
-	import { page } from '$app/stores';
-	import logo from '$lib/images/svelte-logo.svg';
-	import github from '$lib/images/github.svg';
+  import {onMount} from "svelte";
+  import {page} from '$app/stores';
+  import logo from '$lib/images/svelte-logo.svg';
+  import github from '$lib/images/github.svg';
+
+  let networkId = '';
+  let chainName = '';
+  let account = '';
+
+  $: shortAccount = account ? `${account.slice(0, 5)}...${account.slice(-3)}` : '';
+  $: chainName = networkId ? getChainName(networkId) : '';
+
+  onMount(async () => {
+    if (window.ethereum) {
+      window.ethereum.on('chainChanged', async chainId => {
+        networkId = chainId;
+      });
+
+      window.ethereum.on('accountsChanged', async accounts => {
+        account = accounts[0];
+      });
+    }
+  });
+
+  const getChainName = (chainId) => {
+    switch (chainId) {
+      case '0x1':
+        return 'Ethereum Mainnet';
+      case '0x3':
+        return 'Ropsten';
+      case '0x4':
+        return 'Rinkeby';
+      case '0x5':
+        return 'Goerli';
+      case '0x2a':
+        return 'Kovan';
+      case '0xaa36a7':
+        return 'Sepolia'
+      default:
+        return 'Unknown';
+    }
+  };
+  const getChainIdOfAccount = async () => {
+    return window.ethereum.request({method: 'eth_chainId'});
+  };
+
+  const getAccounts = async () => {
+    const accounts = await window.ethereum.request({method: 'eth_requestAccounts'});
+    return accounts[0];
+  };
+
+  const connectButtonHandler = async () => {
+    if (!window.ethereum) {
+      console.log('Metamask not installed');
+      return;
+    }
+    try {
+      networkId = await getChainIdOfAccount();
+      account = await getAccounts();
+    } catch (e) {
+      networkId = '';
+      account = '';
+      console.error(e);
+    }
+    console.log(networkId, account, 'connectButtonHandler');
+  };
+
 </script>
 
 <header>
@@ -31,11 +95,13 @@
 		</svg>
 	</nav>
 
-	<div class="corner">
-		<a href="https://github.com/sveltejs/kit">
-			<img src={github} alt="GitHub" />
-		</a>
-	</div>
+    <!--	<div class="corner">-->
+    <!--		<a href="https://github.com/sveltejs/kit">-->
+    <!--			<img src={github} alt="GitHub" />-->
+    <!--		</a>-->
+    <!--	</div>-->
+    <div>Chain: {chainName}</div>
+    <button type="button" on:click={connectButtonHandler}>{account ? shortAccount : 'Connect Wallet'}</button>
 </header>
 
 <style>
