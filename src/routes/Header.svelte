@@ -2,14 +2,13 @@
   import {onMount} from "svelte";
   import {page} from '$app/stores';
   import logo from '$lib/images/svelte-logo.svg';
-  import github from '$lib/images/github.svg';
+  // import github from '$lib/images/github.svg';
 
   let networkId = '';
   let chainName = '';
   let account = '';
 
   $: shortAccount = account ? `${account.slice(0, 5)}...${account.slice(-3)}` : '';
-  $: chainName = networkId ? getChainName(networkId) : '';
 
   onMount(async () => {
     if (window.ethereum) {
@@ -41,6 +40,8 @@
         return 'Unknown';
     }
   };
+
+  $: chainName = networkId ? getChainName(networkId) : '';
   const getChainIdOfAccount = async () => {
     return window.ethereum.request({method: 'eth_chainId'});
   };
