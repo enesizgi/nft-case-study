@@ -12,6 +12,9 @@
   const price = getContext('price');
   $: basketFlat = $basket ? Object.entries($basket) : [];
   $: totalPrice = Object.values($basket).reduce((acc, nft) => acc.add(nft.price), ethers.BigNumber.from(0));
+  $: totalPriceUSD = totalPrice && $price && parseFloat((totalPrice * $price).toString())
+
+  let width = 0;
 
   let networkId = '';
   let chainName = '';
@@ -60,6 +63,47 @@
     return accounts[0];
   };
 
+  const CHAIN_PARAMS = {
+    '0xaa36a7': {
+      chainId: '0xaa36a7',
+      rpcUrls: ['https://rpc.ankr.com/eth_sepolia'],
+      chainName: 'Sepolia',
+      nativeCurrency: {
+        name: 'Ether',
+        symbol: 'ETH', // 2-6 characters long
+        decimals: 18
+      },
+      blockExplorerUrls: ['https://sepolia.etherscan.io']
+    }
+  };
+
+  const changeNetwork = async networkId => {
+    try {
+      await window.ethereum.request({
+        method: 'wallet_switchEthereumChain',
+        params: [{chainId: networkId}] // chainId must be in hexadecimal numbers
+      });
+      return true;
+    } catch (error) {
+      // This error code indicates that the chain has not been added to MetaMask
+      // if it is not, then install it into the user MetaMask
+      if (error.code === 4902) {
+        try {
+          await window.ethereum.request({
+            method: 'wallet_addEthereumChain',
+            params: [CHAIN_PARAMS[networkId]]
+          });
+          return true;
+        } catch (addError) {
+          console.error(addError);
+          return false;
+        }
+      }
+      console.error(error);
+      return false;
+    }
+  };
+
   const connectButtonHandler = async () => {
     if (!window.ethereum) {
       console.log('Metamask not installed');
@@ -67,6 +111,14 @@
     }
     try {
       networkId = await getChainIdOfAccount();
+      if (!(networkId in CHAIN_PARAMS)) {
+        const success = await changeNetwork('0xaa36a7');
+        if (!success) {
+          networkId = '';
+          return;
+        }
+      }
+
       account.set(await getAccounts());
     } catch (e) {
       networkId = '';
@@ -80,57 +132,65 @@
     console.log('purchaseHandler');
   };
 
+  const disconnectHandler = () => {
+    account.set('');
+    networkId = '';
+  };
+
 </script>
 
-<header>
-    <div class="corner">
-        <a href="https://kit.svelte.dev">
-            <img src={logo} alt="SvelteKit"/>
-        </a>
-    </div>
+<svelte:window bind:innerWidth={width}/>
 
-    <nav>
-        <svg viewBox="0 0 2 3" aria-hidden="true">
-            <path d="M0,0 L1,2 C1.5,3 1.5,3 2,3 L2,0 Z"/>
-        </svg>
-        <div class="basket">
-            <button type="button" on:click={() => showModal = true}>
-                <BasketSvg on:click={() => {
+<header>
+
+    <div class="basket">
+        <button type="button" on:click={() => showModal = true}>
+            <BasketSvg on:click={() => {
                           console.log('click');
                         }}/>
-            </button>
-        </div>
-        <ul>
-            <li>
-                <!-- svelte-ignore a11y-invalid-attribute-->
-                <a href="#">Buy</a>
-            </li>
-            <li>
-                <!-- svelte-ignore a11y-invalid-attribute-->
-                <a href="#">Rent</a>
-            </li>
-            <li>
-                <!-- svelte-ignore a11y-invalid-attribute-->
-                <a href="#">Contact</a>
-            </li>
-        </ul>
+        </button>
+    </div>
+    <nav>
+        {#if width >= 480}
+            <ul>
+                <li>
+                    <!-- svelte-ignore a11y-invalid-attribute-->
+                    <a href="#">Buy</a>
+                </li>
+                <li>
+                    <!-- svelte-ignore a11y-invalid-attribute-->
+                    <a href="#">Rent</a>
+                </li>
+                <li>
+                    <!-- svelte-ignore a11y-invalid-attribute-->
+                    <a href="#">Contact</a>
+                </li>
+            </ul>
+        {/if}
         <button type="button" class="connect"
                 on:click={connectButtonHandler}>{$account ? shortAccount : 'Connect Wallet'}</button>
-
-        <svg viewBox="0 0 2 3" aria-hidden="true">
-            <path d="M0,0 L0,3 C0.5,3 0.5,3 1,2 L2,0 Z"/>
-        </svg>
+        {#if $account}
+            <button type="button" class="disconnect" on:click={disconnectHandler}>Disconnect</button>
+        {/if}
+        <div class="corner">
+            <!-- svelte-ignore a11y-invalid-attribute-->
+            <a href="#">
+                <img src={logo} alt="SvelteKit"/>
+            </a>
+        </div>
     </nav>
-    <div>Chain: {chainName}</div>
+
 </header>
 
 <Modal bind:showModal>
     {#if $basket}
         {#each basketFlat as [key, value]}
-            <Card nft={value}/>
+            <Card nft={value} {showModal}/>
         {/each}
-        <div>Total price: {totalPrice}</div>
-        <button type="button" on:click={purchaseHandler}>Purchase</button>
+        <div class="price-container">
+            <div>Total: {totalPrice} ETH ({totalPriceUSD} USD)</div>
+            <button type="button" on:click={purchaseHandler}>Purchase</button>
+        </div>
     {/if}
 </Modal>
 
@@ -146,9 +206,16 @@
     -moz-appearance: none;
   }
 
+
   header {
     display: flex;
     justify-content: space-between;
+    background-color: rgba(255, 255, 255, 0.7);
+
+    .basket {
+      display: flex;
+      margin-left: 0.5rem;
+    }
   }
 
   .corner {
@@ -173,9 +240,8 @@
   nav {
     display: flex;
     justify-content: center;
-    --background: rgba(255, 255, 255, 0.7);
 
-    ul, .basket, .connect {
+    ul, .basket, .connect, .disconnect {
 
       li {
         position: relative;
@@ -194,7 +260,7 @@
       background-size: contain;
     }
 
-    a, .basket, .connect {
+    a, .basket, .connect, .disconnect {
       display: flex;
       height: 100%;
       align-items: center;
@@ -225,5 +291,22 @@
 
   .basket:hover {
     fill: #4075a6;
+  }
+
+  .disconnect:hover {
+    color: red;
+  }
+
+  .price-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    button {
+      background: #4075a6 none;
+      color: white;
+      border-radius: 0.5rem;
+      padding: 1rem;
+    }
   }
 </style>

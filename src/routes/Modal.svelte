@@ -1,6 +1,6 @@
 <script>
   export let showModal; // boolean
-  import CloseIcon from "$lib/images/close_icon.svg";
+  import CloseIcon from "$lib/images/close_icon.svelte";
 
   let dialog; // HTMLDialogElement
 
@@ -15,7 +15,8 @@
 >
     <div on:click|stopPropagation>
         <button on:click={() => dialog.close()}>
-            <img src={CloseIcon} alt="closeModalIcon" width="20px" height="20px"/>
+            <CloseIcon/>
+            <!--            <img src={CloseIcon} alt="closeModalIcon" width="20px" height="20px"/>-->
         </button>
         <slot name="header"/>
         <hr/>
@@ -24,49 +25,59 @@
     </div>
 </dialog>
 
-<style>
-    dialog {
-        max-width: 32em;
-        border-radius: 0.2em;
-        border: none;
-        padding: 0;
-    }
+<style lang="scss">
+  dialog {
+    left: 70%;
+    height: 100%;
+    max-width: 32em;
+    border-radius: 0.2em;
+    border: none;
+    padding: 0;
 
-    dialog::backdrop {
-        background: rgba(0, 0, 0, 0.3);
+    div > button {
+      border: none;
+      background: #d7c9c9 none;
+      border-radius: 50%;
+      fill: #de0f46;
+      padding: 0.3em;
     }
+  }
 
-    dialog > div {
-        padding: 1em;
-    }
+  dialog::backdrop {
+    background: rgba(0, 0, 0, 0.3);
+  }
 
-    dialog[open] {
-        animation: zoom 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
+  dialog > div {
+    padding: 1em;
+  }
 
-    @keyframes zoom {
-        from {
-            transform: scale(0.95);
-        }
-        to {
-            transform: scale(1);
-        }
-    }
+  dialog[open] {
+    animation: zoom 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
 
-    dialog[open]::backdrop {
-        animation: fade 0.2s ease-out;
+  @keyframes zoom {
+    from {
+      transform: scale(0.95);
     }
+    to {
+      transform: scale(1);
+    }
+  }
 
-    @keyframes fade {
-        from {
-            opacity: 0;
-        }
-        to {
-            opacity: 1;
-        }
-    }
+  dialog[open]::backdrop {
+    animation: fade 0.2s ease-out;
+  }
 
-    button {
-        display: block;
+  @keyframes fade {
+    from {
+      opacity: 0;
     }
+    to {
+      opacity: 1;
+    }
+  }
+
+  button {
+    display: block;
+  }
 </style>
