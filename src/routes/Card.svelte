@@ -7,6 +7,7 @@
     import {getContext, onMount} from 'svelte';
     import {ethers} from 'ethers';
     import ShoppingCart from '$lib/images/shopping-cart.svelte';
+    import imagePlaceholder from '$lib/images/image-placeholder.svg';
 
     const basket = getContext('basket');
     const account = getContext('account');
@@ -91,6 +92,9 @@
 
 <div class="nft-container {isInBasket && 'basket-nft-container'} {showModal && 'isModal'}">
     <div class="card-content">
+        {#if !metadata?.image}
+            <img src={imagePlaceholder} alt="placeholder"/>
+        {/if}
         {#if metadata?.image}
             <img src={metadata?.image} alt="Svelte logo"/>
         {/if}
