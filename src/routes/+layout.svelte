@@ -42,13 +42,10 @@
   setContext('notificationMessage', notificationMessage);
 
   const basket = writable({});
-  console.log('basket', $basket)
   setContext('basket', basket);
   if (typeof localStorage !== "undefined") {
     const localBasket = localStorage.getItem('basket');
     basket.set(localBasket ? JSON.parse(localBasket) : {});
-    console.log('localStorage', localStorage, $basket);
-    console.log($basket);
   }
 
   onMount(async () => {
@@ -61,7 +58,6 @@
 
   const getProviderOrSignerFn = (userId, chainId) => {
     if (userId && chainId) {
-      console.log('signer');
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       return provider.getSigner();
     }
@@ -69,7 +65,6 @@
   };
 
   const getMarketplaceContractFn = (userId, chainId) => {
-    console.log(userId, chainId)
     let marketplaceContract;
     if (chainId && $CONTRACTS['0xaa36a7']) marketplaceContract = $CONTRACTS['0xaa36a7'].MARKETPLACE;
     else marketplaceContract = $CONTRACTS['0xaa36a7'].MARKETPLACE;
@@ -149,7 +144,6 @@
     if (!nft.purchaseId) return false;
     if (!$marketplaceContract) return false;
     return $marketplaceContract.items(nft.purchaseId).then(item => {
-      console.log(item);
       return item.sold === false && item.canceled === false;
     });
   }));

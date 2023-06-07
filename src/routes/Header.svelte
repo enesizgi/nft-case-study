@@ -114,7 +114,6 @@
       account.set('');
       console.error(e);
     }
-    console.log(networkId, $account, 'connectButtonHandler');
   };
 
   const purchaseHandler = async () => {
@@ -128,12 +127,10 @@
           const messages = $notificationMessage;
           messages.shift();
           notificationMessage.set(messages);
-          console.log(messages, 'hey')
         }, 2000);
         return;
       }
     }
-    console.log(Object.values($basket));
     await $marketplaceContract.purchaseItem_multiple(Object.values($basket).map(i => i.purchaseId), {
       value: ethers.utils.parseEther(totalPrice.toString())
     });
@@ -152,9 +149,7 @@
 
     <div class="basket">
         <button type="button" on:click={() => showModal = true}>
-            <BasketSvg on:click={() => {
-                          console.log('click');
-                        }}/>
+            <BasketSvg/>
         </button>
     </div>
     <nav>

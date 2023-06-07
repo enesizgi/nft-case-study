@@ -13,7 +13,6 @@
     const notificationMessage = getContext('notificationMessage');
     const price = getContext('price');
     let metadata;
-    console.log($basket, $account);
 
     let isInBasket = false;
 
@@ -37,7 +36,6 @@
             const messages = $notificationMessage;
             messages.shift();
             notificationMessage.set(messages);
-            console.log(messages, 'hey')
         }, timeout);
     };
 
@@ -60,12 +58,10 @@
         basket.set(newBasket);
         localStorage.setItem('basket', JSON.stringify(newBasket));
         isInBasket = true;
-        console.log($basket);
     };
 
     const removeFromBasketHandler = () => {
         const newBasket = $basket;
-        console.log(nft.id);
         delete newBasket[nft.id];
         basket.set(newBasket);
         localStorage.setItem('basket', JSON.stringify(newBasket));
@@ -73,7 +69,6 @@
         $notificationMessage.push(['Removed from basket', 'error']);
         notificationMessage.set($notificationMessage);
         removeMessage(2000);
-        console.log($basket);
     };
 
     const buyHandler = async () => {
@@ -87,7 +82,6 @@
             }
             return;
         }
-        console.log(marketplaceContract);
         await marketplaceContract.purchaseItem(nft.purchaseId, {
             value: ethers.utils.parseEther(nft.price.toString()),
             from: $account
