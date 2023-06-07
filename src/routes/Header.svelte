@@ -6,10 +6,13 @@
   import Card from "./Card.svelte";
   import {ethers} from 'ethers';
 
+  const CHAIN_PARAMS = getContext('CHAIN_PARAMS');
   // Retrieve user store from context
   const account = getContext('account');
   const basket = getContext('basket');
   const price = getContext('price');
+  const notificationMessage = getContext('notificationMessage');
+  const marketplaceContract = getContext('marketplaceContract');
   $: basketFlat = $basket ? Object.entries($basket) : [];
   $: totalPrice = Object.values($basket).reduce((acc, nft) => acc.add(nft.price), ethers.BigNumber.from(0));
   $: totalPriceUSD = totalPrice && $price && parseFloat((totalPrice * $price).toString())
@@ -63,20 +66,6 @@
     return accounts[0];
   };
 
-  const CHAIN_PARAMS = {
-    '0xaa36a7': {
-      chainId: '0xaa36a7',
-      rpcUrls: ['https://rpc.ankr.com/eth_sepolia'],
-      chainName: 'Sepolia',
-      nativeCurrency: {
-        name: 'Ether',
-        symbol: 'ETH', // 2-6 characters long
-        decimals: 18
-      },
-      blockExplorerUrls: ['https://sepolia.etherscan.io']
-    }
-  };
-
   const changeNetwork = async networkId => {
     try {
       await window.ethereum.request({
@@ -111,7 +100,7 @@
     }
     try {
       networkId = await getChainIdOfAccount();
-      if (!(networkId in CHAIN_PARAMS)) {
+      if (!(networkId in $CHAIN_PARAMS)) {
         const success = await changeNetwork('0xaa36a7');
         if (!success) {
           networkId = '';
@@ -128,8 +117,26 @@
     console.log(networkId, $account, 'connectButtonHandler');
   };
 
-  const purchaseHandler = () => {
-    console.log('purchaseHandler');
+  const purchaseHandler = async () => {
+    if (!$account) {
+      const message = ['Please connect your wallet first.', 'error'];
+      if (!$notificationMessage.find(i => i === message)) {
+        const newMessages = $notificationMessage;
+        newMessages.push(message);
+        notificationMessage.set(newMessages);
+        setTimeout(() => {
+          const messages = $notificationMessage;
+          messages.shift();
+          notificationMessage.set(messages);
+          console.log(messages, 'hey')
+        }, 2000);
+        return;
+      }
+    }
+    console.log(Object.values($basket));
+    await $marketplaceContract.purchaseItem_multiple(Object.values($basket).map(i => i.purchaseId), {
+      value: ethers.utils.parseEther(totalPrice.toString())
+    });
   };
 
   const disconnectHandler = () => {
@@ -184,7 +191,7 @@
 
 <Modal bind:showModal>
     {#if $basket}
-        {#each basketFlat as [key, value]}
+        {#each basketFlat as [key, value] (key)}
             <Card nft={value} {showModal}/>
         {/each}
         <div class="price-container">

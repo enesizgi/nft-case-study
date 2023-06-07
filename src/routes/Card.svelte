@@ -1,11 +1,16 @@
 <script lang="ts">
+    import CloseIcon from "$lib/images/close_icon.svelte";
+
     export let nft;
     export let showModal;
+    export let marketplaceContract;
     import {getContext, onMount} from 'svelte';
+    import {ethers} from 'ethers';
     import ShoppingCart from '$lib/images/shopping-cart.svelte';
 
     const basket = getContext('basket');
     const account = getContext('account');
+    const notificationMessage = getContext('notificationMessage');
     const price = getContext('price');
     let metadata;
     console.log($basket, $account);
@@ -27,12 +32,29 @@
         return response.json();
     };
 
+    const removeMessage = (timeout = 2000) => {
+        setTimeout(() => {
+            const messages = $notificationMessage;
+            messages.shift();
+            notificationMessage.set(messages);
+            console.log(messages, 'hey')
+        }, timeout);
+    };
+
     const addToBasketHandler = () => {
         if (!$account) {
-            console.log($account)
-            console.log('Please connect your wallet');
+            const message = ['Please connect your wallet', 'error'];
+            if (!$notificationMessage.find(i => i === message)) {
+                const newMessages = $notificationMessage;
+                newMessages.push(message);
+                notificationMessage.set(newMessages);
+                removeMessage();
+            }
             return;
         }
+        $notificationMessage.push(['Added to basket', 'success']);
+        notificationMessage.set($notificationMessage);
+        removeMessage();
         const newBasket = $basket;
         newBasket[nft.id] = nft;
         basket.set(newBasket);
@@ -43,11 +65,33 @@
 
     const removeFromBasketHandler = () => {
         const newBasket = $basket;
+        console.log(nft.id);
         delete newBasket[nft.id];
         basket.set(newBasket);
         localStorage.setItem('basket', JSON.stringify(newBasket));
         isInBasket = false;
+        $notificationMessage.push(['Removed from basket', 'error']);
+        notificationMessage.set($notificationMessage);
+        removeMessage(2000);
         console.log($basket);
+    };
+
+    const buyHandler = async () => {
+        if (!$account) {
+            const message = ['Please connect your wallet', 'error'];
+            if (!$notificationMessage.find(i => i === message)) {
+                const newMessages = $notificationMessage;
+                newMessages.push(message);
+                notificationMessage.set(newMessages);
+                removeMessage();
+            }
+            return;
+        }
+        console.log(marketplaceContract);
+        await marketplaceContract.purchaseItem(nft.purchaseId, {
+            value: ethers.utils.parseEther(nft.price.toString()),
+            from: $account
+        });
     };
 </script>
 
@@ -61,10 +105,16 @@
             <div>{metadata?.name}</div>
             <div>Price: {nft.price} ETH ({usdPrice} USD)</div>
         </div>
+
+        {#if showModal}
+            <button on:click={removeFromBasketHandler} class="close-icon-button">
+                <CloseIcon/>
+            </button>
+        {/if}
     </div>
     {#if !showModal}
         <div class="buy-container">
-            <button type="button">Buy</button>
+            <button type="button" on:click={buyHandler}>Buy</button>
             <button type="button"
                     on:click={isInBasket ? removeFromBasketHandler: addToBasketHandler}>
                 <ShoppingCart --fillColor={isInBasket ? 'red' :'white'}/>
@@ -142,6 +192,8 @@
 
     .card-content {
       display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
 
     .card-info {
@@ -151,5 +203,20 @@
     img {
       width: 20%;
     }
+  }
+
+  .close-icon-button {
+    border: none;
+    background: #d7c9c9 none;
+    border-radius: 50%;
+    fill: #de0f46;
+    height: 2rem;
+    position: relative;
+    right: 1rem;
+    visibility: hidden;
+  }
+
+  .nft-container:hover .close-icon-button {
+    visibility: visible;
   }
 </style>

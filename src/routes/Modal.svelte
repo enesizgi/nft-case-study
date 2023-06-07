@@ -16,7 +16,6 @@
     <div on:click|stopPropagation>
         <button on:click={() => dialog.close()}>
             <CloseIcon/>
-            <!--            <img src={CloseIcon} alt="closeModalIcon" width="20px" height="20px"/>-->
         </button>
         <slot name="header"/>
         <hr/>
