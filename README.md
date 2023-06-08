@@ -1,6 +1,6 @@
 # Live URL
 
-**https://spintop-case-study.vercel.app/**
+**https://nft-case-study.vercel.app/**
 
 **Note: Loading 10 images might take some time because of usage of IPFS. I have used real nfts on Sepolia.**
 
