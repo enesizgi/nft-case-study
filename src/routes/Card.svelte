@@ -90,14 +90,14 @@
     };
 </script>
 
-<div class="group m-1 border-4 border-solid border-gray-200 w-1/4 rounded-xl nft-container {isInBasket && 'basket-nft-container'} {showModal && 'isModal'}">
-    <div class="rounded-t-xl overflow-hidden card-content">
-        <img class="box-border max-w-full rounded-t-xl transition ease-in-out duration-300 group-hover:scale-110"
+<div class="group m-1 border-4 border-solid border-gray-200 bg-[#293249] w-1/4 rounded-xl nft-container {isInBasket && 'basket-nft-container'} {showModal && 'isModal'}">
+    <div class="rounded-t-xl overflow-hidden text-white card-content">
+        <img class="box-border max-w-full rounded-t-l transition ease-in-out duration-300 group-hover:scale-110"
              src={metadata?.image ? metadata.image : imagePlaceholder}
              alt="{metadata?.image ? 'Svelte Logo' : 'placeholder'}"/>
-        <div class="card-info">
+        <div class="mt-3 card-info">
             <div>{metadata?.name}</div>
-            <div>Price: {nft.price} ETH ({usdPrice} USD)</div>
+            <div>{nft.price} ETH ({usdPrice} USD)</div>
         </div>
 
         {#if showModal}
@@ -121,7 +121,6 @@
 </div>
 
 <style lang="postcss">
-    @import url('https://fonts.googleapis.com/css2?family=Agdasima&family=Roboto+Mono&display=swap');
 
     .nft-container {
         flex: 16%;
@@ -142,7 +141,6 @@
     }
 
     .buy-container {
-        font-family: 'Roboto Mono', monospace;
         align-items: center;
 
         * {
