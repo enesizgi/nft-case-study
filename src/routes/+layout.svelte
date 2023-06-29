@@ -1,8 +1,9 @@
 <script>
+  import "../app.css";
   import Header from './Header.svelte';
   import './styles.css';
   import {writable} from "svelte/store";
-  import {getContext, setContext, onMount} from "svelte";
+  import {setContext, onMount} from "svelte";
 
   import * as MarketplaceAddressSepolia from '$lib/contractsData/sepolia/Marketplace-address.json';
   import * as MarketplaceAbiSepolia from '$lib/contractsData/sepolia/Marketplace.json';
@@ -107,36 +108,36 @@
       price: 1,
       purchaseId: 7
     },
-    {
-      id: 5,
-      metadata: "ipfs://bafkreiezlvqyau6kjziuksnbhg2gnoeblga557g64yz2ep2unfkehazega",
-      price: 1,
-      purchaseId: 6
-    },
-    {
-      id: 6,
-      metadata: "ipfs://bafkreihw6xgjhq6bnihzmnvpeqzv6hsla6qe3mnohh7gamgegg5gb5t3w4",
-      price: 2,
-      purchaseId: 5
-    },
-    {
-      id: 7,
-      metadata: "ipfs://bafkreih7a7ctsfjdkhhznm4zrxfgnksuubtf3padnvdqgp537a3gtmy754",
-      price: 1,
-      purchaseId: 4
-    },
-    {
-      id: 12,
-      metadata: "ipfs://bafkreiemakwynm3seqlxub4m5qapiavab3pzv54vfn4fiyfjbgzxlrpky4",
-      price: 1,
-      purchaseId: 3
-    },
-    {
-      id: 9,
-      metadata: "ipfs://bafkreic53igmvxfyne5bb3fl6u7ytawtqqbitoymuc5c4hv3hpcyaiai3m",
-      price: 1,
-      purchaseId: 1
-    },
+    // {
+    //   id: 5,
+    //   metadata: "ipfs://bafkreiezlvqyau6kjziuksnbhg2gnoeblga557g64yz2ep2unfkehazega",
+    //   price: 1,
+    //   purchaseId: 6
+    // },
+    // {
+    //   id: 6,
+    //   metadata: "ipfs://bafkreihw6xgjhq6bnihzmnvpeqzv6hsla6qe3mnohh7gamgegg5gb5t3w4",
+    //   price: 2,
+    //   purchaseId: 5
+    // },
+    // {
+    //   id: 7,
+    //   metadata: "ipfs://bafkreih7a7ctsfjdkhhznm4zrxfgnksuubtf3padnvdqgp537a3gtmy754",
+    //   price: 1,
+    //   purchaseId: 4
+    // },
+    // {
+    //   id: 12,
+    //   metadata: "ipfs://bafkreiemakwynm3seqlxub4m5qapiavab3pzv54vfn4fiyfjbgzxlrpky4",
+    //   price: 1,
+    //   purchaseId: 3
+    // },
+    // {
+    //   id: 9,
+    //   metadata: "ipfs://bafkreic53igmvxfyne5bb3fl6u7ytawtqqbitoymuc5c4hv3hpcyaiai3m",
+    //   price: 1,
+    //   purchaseId: 1
+    // },
   ]);
   setContext('nfts', nfts);
 

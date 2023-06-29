@@ -90,15 +90,11 @@
     };
 </script>
 
-<div class="nft-container {isInBasket && 'basket-nft-container'} {showModal && 'isModal'}">
-    <div class="card-content">
-        {#if !metadata?.image}
-            <img src={imagePlaceholder} alt="placeholder"/>
-        {/if}
-        {#if metadata?.image}
-            <img src={metadata?.image} alt="Svelte logo"/>
-        {/if}
-        <!--    <img src={metadata?.image} alt="Svelte logo"/>-->
+<div class="group m-1 border-4 border-solid border-gray-200 w-1/4 rounded-xl nft-container {isInBasket && 'basket-nft-container'} {showModal && 'isModal'}">
+    <div class="rounded-t-xl overflow-hidden card-content">
+        <img class="box-border max-w-full rounded-t-xl transition ease-in-out duration-300 group-hover:scale-110"
+             src={metadata?.image ? metadata.image : imagePlaceholder}
+             alt="{metadata?.image ? 'Svelte Logo' : 'placeholder'}"/>
         <div class="card-info">
             <div>{metadata?.name}</div>
             <div>Price: {nft.price} ETH ({usdPrice} USD)</div>
@@ -111,9 +107,12 @@
         {/if}
     </div>
     {#if !showModal}
-        <div class="buy-container">
-            <button type="button" on:click={buyHandler}>Buy</button>
+        <div class="opacity-0 transition-all duration-200 ease-in-out flex items-center justify-evenly rounded-b-xl text-xl h-8 buy-container">
+            <button type="button" on:click={buyHandler}
+                    class="bg-[#2081e2] hover:bg-[#2e8eee] w-4/5 h-full rounded-bl-xl">Buy now
+            </button>
             <button type="button"
+                    class="bg-[#2081e2] hover:bg-[#2e8eee] w-1/5 h-full flex items-center justify-center rounded-br-xl"
                     on:click={isInBasket ? removeFromBasketHandler: addToBasketHandler}>
                 <ShoppingCart --fillColor={isInBasket ? 'red' :'white'}/>
             </button>
@@ -121,100 +120,76 @@
     {/if}
 </div>
 
-<style lang="scss">
-  .nft-container {
-    border: 5px solid #cccccc;
-    margin: 5px;
-    width: 25%;
-    flex: 16%;
+<style lang="postcss">
+    @import url('https://fonts.googleapis.com/css2?family=Agdasima&family=Roboto+Mono&display=swap');
 
-    img {
-      max-width: 100%;
-      padding: 1rem;
-      box-sizing: border-box;
-    }
-  }
-
-  .basket-nft-container {
-    border: 5px solid #4075a6;
-    box-shadow: 0 0 10px #ff0000;
-    margin-left: 0;
-    margin-bottom: 1rem;
-  }
-
-  .card-info {
-    div {
-      padding-left: 0.5rem;
-      padding-bottom: 0.5rem;
-    }
-  }
-
-  .buy-container {
-    transition: all 0.2s linear;
-    visibility: hidden;
-    display: flex;
-    align-items: center;
-    padding-left: 0.5rem;
-    background: #4075a6;
-
-    * {
-      cursor: pointer;
+    .nft-container {
+        flex: 16%;
     }
 
-    *:hover {
-      transform: scale(1.1);
-    }
-
-    button {
-      flex: 60%;
-      background: none;
-      border: none;
-      color: white;
-      margin-right: 0.5rem;
-    }
-
-    button:first-child {
-      font-size: 1.5rem;
-      font-weight: bold;
-    }
-  }
-
-  .nft-container:hover .buy-container {
-    transition: all 0.5s ease-in-out;
-
-    visibility: visible;
-  }
-
-  .isModal {
-    width: 100%;
-
-    .card-content {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+    .basket-nft-container {
+        border: 5px solid #4075a6;
+        box-shadow: 0 0 10px #ff0000;
+        margin-left: 0;
+        margin-bottom: 1rem;
     }
 
     .card-info {
-      padding-top: 1rem;
+        div {
+            padding-left: 0.5rem;
+            padding-bottom: 0.5rem;
+        }
     }
 
-    img {
-      width: 20%;
+    .buy-container {
+        font-family: 'Roboto Mono', monospace;
+        align-items: center;
+
+        * {
+            cursor: pointer;
+        }
+
+        button {
+            border: none;
+            color: white;
+        }
     }
-  }
 
-  .close-icon-button {
-    border: none;
-    background: #d7c9c9 none;
-    border-radius: 50%;
-    fill: #de0f46;
-    height: 2rem;
-    position: relative;
-    right: 1rem;
-    visibility: hidden;
-  }
+    .nft-container:hover .buy-container {
+        opacity: 1;
+    }
 
-  .nft-container:hover .close-icon-button {
-    visibility: visible;
-  }
+
+    .isModal {
+        width: 100%;
+
+        .card-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-info {
+            padding-top: 1rem;
+        }
+
+        img {
+            width: 20%;
+        }
+    }
+
+    .close-icon-button {
+        border: none;
+        background: #d7c9c9 none;
+        border-radius: 50%;
+        fill: #de0f46;
+        height: 2rem;
+        position: relative;
+        right: 1rem;
+        visibility: hidden;
+    }
+
+    .nft-container:hover .close-icon-button {
+        visibility: visible;
+    }
 </style>
