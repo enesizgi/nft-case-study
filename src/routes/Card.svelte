@@ -91,10 +91,12 @@
 </script>
 
 <div class="group m-1 border-4 border-solid border-gray-200 bg-[#293249] w-1/4 rounded-xl nft-container {isInBasket && 'basket-nft-container'} {showModal && 'isModal'}">
-    <div class="rounded-t-xl overflow-hidden text-white card-content">
-        <img class="box-border max-w-full rounded-t-l transition ease-in-out duration-300 group-hover:scale-110"
-             src={metadata?.image ? metadata.image : imagePlaceholder}
-             alt="{metadata?.image ? 'Svelte Logo' : 'placeholder'}"/>
+    <div class="rounded-t-xl text-white card-content">
+        <div class="overflow-hidden">
+            <img class="box-border max-w-full rounded-t-l transition ease-in-out duration-300 group-hover:scale-110"
+                 src={metadata?.image ? metadata.image : imagePlaceholder}
+                 alt="{metadata?.image ? 'Svelte Logo' : 'placeholder'}"/>
+        </div>
         <div class="mt-3 card-info">
             <div>{metadata?.name}</div>
             <div>{nft.price} ETH ({usdPrice} USD)</div>
