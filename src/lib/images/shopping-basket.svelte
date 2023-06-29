@@ -1,4 +1,4 @@
-<svg fill="#000000" height="2rem" width="2rem" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"
+<svg fill="white" height="2rem" width="2rem" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"
      xmlns:xlink="http://www.w3.org/1999/xlink">
     <g>
         <g>

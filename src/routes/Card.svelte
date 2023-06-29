@@ -109,7 +109,7 @@
     {#if !showModal}
         <div class="opacity-0 transition-all duration-200 ease-in-out flex items-center justify-evenly rounded-b-xl text-xl h-8 buy-container">
             <button type="button" on:click={buyHandler}
-                    class="bg-[#2081e2] hover:bg-[#2e8eee] w-4/5 h-full rounded-bl-xl">Buy now
+                    class="bg-[#2081e2] hover:bg-[#2e8eee] w-4/5 h-full border-r border-white rounded-bl-xl">Buy now
             </button>
             <button type="button"
                     class="bg-[#2081e2] hover:bg-[#2e8eee] w-1/5 h-full flex items-center justify-center rounded-br-xl"
@@ -148,7 +148,6 @@
         }
 
         button {
-            border: none;
             color: white;
         }
     }
