@@ -13,7 +13,7 @@
 </svelte:head>
 
 <section>
-    <div class="nft-display-container">
+    <div class="w-screen px-4 sm:p-0 nft-display-container">
         {#each $nfts as nft (nft.id)}
             <Card nft={nft} showModal={false} marketplaceContract={$marketplaceContract}/>
         {/each}

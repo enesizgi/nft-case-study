@@ -12,9 +12,10 @@
         bind:this={dialog}
         on:close={() => (showModal = false)}
         on:click|self={() => dialog.close()}
+        class="sm:w-1/2 sm:left-1/2 md:w-1/3 md:left-2/3 lg:w-1/4 lg:left-3/4 xl:w-1/5 xl:left-[80%] bg-[#131A2A]"
 >
     <div on:click|stopPropagation>
-        <button on:click={() => dialog.close()}>
+        <button on:click={() => dialog.close()} class="m-1 p-1">
             <CloseIcon/>
         </button>
         <slot name="header"/>
@@ -26,11 +27,7 @@
 
 <style lang="scss">
   dialog {
-    left: 70%;
     height: 100%;
-    max-width: 32em;
-    border-radius: 0.2em;
-    border: none;
     padding: 0;
 
     div > button {
@@ -38,7 +35,6 @@
       background: #d7c9c9 none;
       border-radius: 50%;
       fill: #de0f46;
-      padding: 0.3em;
     }
   }
 

@@ -14,11 +14,13 @@
     const notificationMessage = getContext('notificationMessage');
     const price = getContext('price');
     let metadata;
+    let windowWidth;
 
     let isInBasket = false;
 
     $: $basket && nft && $basket[nft.id] ? isInBasket = true : isInBasket = false;
     $: usdPrice = $price && nft && parseFloat((nft.price * $price).toFixed(2));
+    // $: windowWidth && console.log(windowWidth);
 
     onMount(async () => {
         metadata = await getMetadata();
@@ -90,20 +92,24 @@
     };
 </script>
 
-<div class="group m-1 border-4 border-solid border-gray-200 bg-[#293249] w-1/4 rounded-xl nft-container {isInBasket && 'basket-nft-container'} {showModal && 'isModal'}">
-    <div class="rounded-t-xl text-white card-content">
-        <div class="overflow-hidden rounded-t-md">
-            <img class="box-border max-w-full rounded-t-l transition ease-in-out duration-300 group-hover:scale-110"
+<svelte:window bind:innerWidth={windowWidth}/>
+
+<div class="group m-1 border-4 border-solid border-gray-200 bg-[#293249] w-1/4 rounded-xl h-full basis-full sm:basis-1/3
+            md:basis-1/4 lg:basis-1/5 xl:basis-1/6 nft-container {isInBasket && 'ml-0 mb-4'}
+            {isInBasket && !showModal && 'border-4 border-[#4075a6]'} {showModal && 'w-full border-2 border-white'}">
+    <div class="rounded-t-xl text-white card-content {showModal && 'flex'}">
+        <div class="overflow-hidden rounded-t-md {showModal && 'w-1/4'}">
+            <img class="w-full box-border max-w-full rounded-t-l transition ease-in-out duration-300 group-hover:scale-110"
                  src={metadata?.image ? metadata.image : imagePlaceholder}
                  alt="{metadata?.image ? 'Svelte Logo' : 'placeholder'}"/>
         </div>
-        <div class="mt-3 card-info">
-            <div>{metadata?.name}</div>
-            <div>{nft.price} ETH ({usdPrice} USD)</div>
+        <div class="card-info {showModal ? 'm-0 text-base sm:text-xl w-3/4' : 'mt-3'}">
+            <div class="h-6 overflow-hidden">{metadata?.name}</div>
+            <div class="h-6 overflow-hidden">{nft.price} ETH ({usdPrice} USD)</div>
         </div>
 
         {#if showModal}
-            <button on:click={removeFromBasketHandler} class="close-icon-button">
+            <button on:click={removeFromBasketHandler} class="p-1.5 m-1.5 close-icon-button">
                 <CloseIcon/>
             </button>
         {/if}
@@ -123,17 +129,6 @@
 </div>
 
 <style lang="postcss">
-
-    .nft-container {
-        flex: 16%;
-    }
-
-    .basket-nft-container {
-        border: 5px solid #4075a6;
-        box-shadow: 0 0 10px #ff0000;
-        margin-left: 0;
-        margin-bottom: 1rem;
-    }
 
     .card-info {
         div {
@@ -158,32 +153,12 @@
         opacity: 1;
     }
 
-
-    .isModal {
-        width: 100%;
-
-        .card-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .card-info {
-            padding-top: 1rem;
-        }
-
-        img {
-            width: 20%;
-        }
-    }
-
     .close-icon-button {
         border: none;
         background: #d7c9c9 none;
         border-radius: 50%;
         fill: #de0f46;
         height: 2rem;
-        position: relative;
         right: 1rem;
         visibility: hidden;
     }

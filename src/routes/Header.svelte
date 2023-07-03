@@ -189,7 +189,7 @@
         {#each basketFlat as [key, value] (key)}
             <Card nft={value} {showModal}/>
         {/each}
-        <div class="price-container">
+        <div class="text-white m-1 price-container">
             <div>Total: {totalPrice} ETH ({totalPriceUSD} USD)</div>
             <button type="button" on:click={purchaseHandler}>Purchase</button>
         </div>
