@@ -94,7 +94,7 @@
 
 <svelte:window bind:innerWidth={windowWidth}/>
 
-<div class="group m-1 border-4 border-solid border-gray-200 bg-[#293249] w-1/4 rounded-xl h-full basis-full sm:basis-1/3
+<div class="group m-1 border-4 border-solid bg-[#293249] w-1/4 rounded-xl h-full basis-full sm:basis-1/3
             md:basis-1/4 lg:basis-1/5 xl:basis-1/6 nft-container {isInBasket && 'ml-0 mb-4'}
             {isInBasket && !showModal && 'border-4 border-[#4075a6]'} {showModal && 'w-full border-2 border-white'}">
     <div class="rounded-t-xl text-white card-content {showModal && 'flex'}">

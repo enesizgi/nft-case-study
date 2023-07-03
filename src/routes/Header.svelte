@@ -193,7 +193,7 @@
             {#if $basket && Object.keys($basket).length === 0}
                 <div class="text-center">Your basket is empty</div>
             {:else}
-                <div>Total: {totalPrice} ETH ({totalPriceUSD} USD)</div>
+                <div>Total: {totalPrice} ETH ({totalPriceUSD.toFixed(2)} USD)</div>
                 <button type="button" on:click={purchaseHandler}>Purchase</button>
             {/if}
         </div>
