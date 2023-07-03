@@ -190,8 +190,12 @@
             <Card nft={value} {showModal}/>
         {/each}
         <div class="text-white m-1 price-container">
-            <div>Total: {totalPrice} ETH ({totalPriceUSD} USD)</div>
-            <button type="button" on:click={purchaseHandler}>Purchase</button>
+            {#if $basket && Object.keys($basket).length === 0}
+                <div class="text-center">Your basket is empty</div>
+            {:else}
+                <div>Total: {totalPrice} ETH ({totalPriceUSD} USD)</div>
+                <button type="button" on:click={purchaseHandler}>Purchase</button>
+            {/if}
         </div>
     {/if}
 </Modal>
